@@ -1,38 +1,60 @@
 """
 Project 1 - Number Guessing Game
 --------------------------------
-
-For this first project you can use Workspaces. 
-
-NOTE: If you prefer to work locally on your own computer, you can totally do that by clicking: File -> Download Workspace in the file menu after you fork the snapshot of this workspace.
-
 """
 
 import random
+from statistics import mean, median, multimode
 
+record = []
 
 def start_game():
-    """Psuedo-code Hints
+    print("** Welcome to the guessing game! **")
     
-    When the program starts, we want to:
-    ------------------------------------
-    1. Display an intro/welcome message to the player.
-    2. Store a random number as the answer/solution.
-    3. Continuously prompt the player for a guess.
-      a. If the guess greater than the solution, display to the player "It's lower".
-      b. If the guess is less than the solution, display to the player "It's higher".
+    best_score = 0 if len(record) == 0 else min(record)
     
-    4. Once the guess is correct, stop looping, inform the user they "Got it"
-         and show how many attempts it took them to get the correct number.
-    5. Save their attempt number to a list.
-    6. At the end of the game, show the player, 1) their number of attempts, 2) the mean, median, and mode of the saved attempts list.
-    7. Ask the player if they want to play again.
-    
-    ( You can add more features/enhancements if you'd like to. )
-    """
-    # write your code inside this function.
+    print(f"Current best score: {best_score}\n")
 
+    solution = random.randint(1, 100)
+    
+    num_guesses = 0
+    
+    while True:
+        try:
+            guess = input("Guess an integer between 1 and 100 inclusive: ")
+            
+            if not guess.isnumeric() or int(guess) < 1 or int(guess) > 100:
+                raise ValueError("  ERROR: Your guess must be an INTEGER within the range of 1 to 100 inclusive.")
+                
+            guess = int(guess)
+
+            num_guesses += 1
+        except ValueError as ve:
+            print(ve)
+        else:
+            if guess > solution:
+                print("It's lower")
+            elif guess < solution:
+                print("It's higher")
+            else:
+                print(f"\nYou got it in {num_guesses} attempts!")
+                record.append(num_guesses)
+                break
+            
+    # print stats
+    print(f"\nSTATISTICS\n Number of attempts: {len(record)}")
+    print(f" Mean: {round(mean(record), 2)}\n Median: {median(record)}\n Mode(s): {multimode(record)}\n")
 
 
 # Kick off the program by calling the start_game function.
-start_game()
+ans = "y"
+while ans == "y":
+    start_game()
+    
+    ans = input("Would you like to play again (y/n)? ")[0].lower() 
+    
+    print()
+    
+    if ans == "n":
+        print("                            Goodbye...")
+    
